@@ -1,0 +1,104 @@
+<%@ Page Language="vb" AutoEventWireup="false" MasterPageFile="~/ems.Master" CodeBehind="frmSMSgrpReg.aspx.vb" Inherits="E_Management.frmSMSgrpReg" 
+    title="SMS Group Creation" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="CPHApplication" runat="server">
+    &nbsp;<table align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="16">
+                <img height="16" src="/images/top_lef.gif" width="16" /></td>
+            <td background="/images/top_mid.gif" height="16">
+                <img height="16" src="/images/top_mid.gif" width="16" /></td>
+            <td width="24">
+                <img height="16" src="/images/top_rig.gif" width="24" /></td>
+        </tr>
+        <tr>
+            <td background="/images/cen_lef.gif" width="16">
+                <img height="11" src="/images/cen_lef.gif" width="16" /></td>
+            <td bgcolor="#ffffff" valign="top">
+                <table align="center">
+                    <tr>
+                        <td align="center" colspan="2" style="font-weight: bold; background: #5d7b9d; color: white">
+                            <asp:Label ID="Label2" runat="server" Font-Bold="True" Font-Size="Small" Text="SMS Group Creation"></asp:Label></td>
+                    </tr>
+                    <tr>
+                        <td id="Td1" runat="server" colspan="3" style="background-color: beige">
+                            <asp:Label ID="LblMsg" runat="server" Font-Bold="True" Font-Size="Small"></asp:Label></td>
+                    </tr>
+                    <tr>
+                        <td id="Td4" runat="server" colspan="3" style="background-color: beige">
+                            <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="Small">Select if existing group</asp:Label><asp:DropDownList
+                                ID="DropDownList1" runat="server" Width="252px" DataSourceID="SqlDataSource1" DataTextField="groupname" DataValueField="groupname" AutoPostBack="True">
+                            </asp:DropDownList><asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:SMSConnectionString %>"
+                                SelectCommand="select distinct groupname from tbl_group_sms order by groupname">
+                            </asp:SqlDataSource>
+                            <br />
+                            <asp:Label ID="Label4" runat="server" Font-Bold="True" Font-Size="Small">type if new group</asp:Label>
+                            &nbsp; &nbsp; &nbsp; &nbsp;<asp:TextBox ID="TxtBoxGrpName" runat="server" Width="254px"></asp:TextBox></td>
+                    </tr>
+                   
+                     <tr>
+                        <td id="Td5" runat="server" colspan="3" style="background-color: beige">
+                            <asp:Label ID="Label6" runat="server" Font-Bold="True" Font-Size="Small">Enter Mobile Number</asp:Label>
+                            <asp:TextBox ID="TxtBoxMobileNo" runat="server" Width="255px"></asp:TextBox><br />
+                            <asp:Label ID="Label5" runat="server" Font-Bold="True" Font-Size="Small">[ex: +60123456789]</asp:Label></td>
+                    </tr>
+                     <tr>
+                        <td id="Td6" runat="server" colspan="3" style="background-color: beige">
+                            <asp:Label ID="Label7" runat="server" Font-Bold="True" Font-Size="Small">type employee code</asp:Label>
+                            &nbsp;
+                            <asp:TextBox ID="TxtEmpCode" runat="server" Width="202px"></asp:TextBox>
+                            <asp:Button ID="BtnSave" runat="server" Text="Save" /><br />
+                            <asp:Label ID="LblEmpName" runat="server" Font-Bold="True" Font-Size="Small"> </asp:Label></td>
+                    </tr>
+                    <tr>
+                        <td id="Td2" colspan="2" runat="server" align="center" style="background-color: beige">
+                            <asp:Label ID="Label3" runat="server" Font-Bold="True" Font-Size="Small" Text="Group Details"></asp:Label></td>
+                        
+                                               
+                    </tr>
+                    <tr>
+                        
+                        <td colspan="2" style="background-color: beige" valign="top">
+                            &nbsp;<asp:GridView ID="GridView2" runat="server" AllowSorting="True" AutoGenerateColumns="False"
+                                CellPadding="4" ForeColor="#333333" GridLines="None" DataKeyNames="id">
+                                <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+                                <Columns>
+                                    <asp:BoundField DataField="id" HeaderText="id" InsertVisible="False" ReadOnly="True"
+                                        SortExpression="id" />
+                                    <asp:BoundField DataField="empcode" HeaderText="empcode" SortExpression="empcode" />
+                                     <asp:BoundField DataField="empname" HeaderText="empname" SortExpression="empname" />
+                                    <asp:BoundField DataField="groupname" HeaderText="groupname" SortExpression="groupname" />
+                                    <asp:BoundField DataField="mobileno" HeaderText="mobileno" SortExpression="mobileno" />
+                                   <asp:TemplateField>
+                        <EditItemTemplate>
+                            <asp:CheckBox ID="CheckBox1" runat="server" />
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:CheckBox ID="CheckBox1" runat="server" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                                </Columns>
+                                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                                <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                                <EditRowStyle BackColor="#999999" />
+                                <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                            </asp:GridView>
+                            <asp:Button ID="Button1" runat="server" Text="Delete" /></td>
+                       
+                    </tr>
+                </table>
+            </td>
+            <td background="/images/cen_rig.gif" width="24">
+                <img height="11" src="/images/cen_rig.gif" width="24" /></td>
+        </tr>
+        <tr>
+            <td height="16" width="16">
+                <img height="16" src="/images/bot_lef.gif" width="16" /></td>
+            <td background="/images/bot_mid.gif" height="16">
+                <img height="16" src="/images/bot_mid.gif" width="16" /></td>
+            <td height="16" width="24">
+                <img height="16" src="/images/bot_rig.gif" width="24" /></td>
+        </tr>
+    </table>
+</asp:Content>

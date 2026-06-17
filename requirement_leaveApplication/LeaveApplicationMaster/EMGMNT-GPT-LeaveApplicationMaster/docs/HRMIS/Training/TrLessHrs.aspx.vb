@@ -1,0 +1,12 @@
+Imports CrystalDecisions.CrystalReports.Engine
+Imports CrystalDecisions.Shared
+Partial Public Class TrLessHrs
+    Inherits System.Web.UI.Page
+    Dim MyGlobal As New Emanagement.globalinfo
+    Dim MyApp As New Emanagement.EMSapplications
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+    End Sub
+
+End Class

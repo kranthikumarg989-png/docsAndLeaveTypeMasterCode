@@ -1,0 +1,211 @@
+Imports System.Data
+Imports System
+Imports System.Globalization
+Imports System.Data.SqlClient
+Imports E_Management.emanagement.globalinfo
+Imports E_Management.emanagement.EMSapplications
+Imports e_management.emanagement.NetGlobal
+Imports System.Web.Security
+Partial Public Class ApptForBangladeshi
+    Inherits System.Web.UI.Page
+    Dim MyGlobal As New Emanagement.globalinfo
+    Dim MyApp As New Emanagement.EMSapplications
+    Dim thisdate As Date
+    Dim ecode
+    Dim appno
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        MyGlobal.Open_Con()
+        MyGlobal.Con_Str()
+
+        '' check access rights 
+        If Session("empcode") <> "" Or Len(Session("empcode")) <> 0 Then
+            MyScreenId = (195)
+            If GlobalDSRights.Tables(0).Rows.Count > 0 Then
+                For Each row As DataRow In GlobalDSRights.Tables(0).Select("scrid = '" & MyScreenId & "'")
+                    MyScreenStat = row("scrstatus").ToString
+                Next
+            Else
+                MyScreenStat = 0
+            End If
+
+            If MyScreenStat = 0 Then
+                ' MessageBox("Sorry!!! You are not having Access to this screen")
+                Response.Redirect("~\hrmis\default.aspx")
+            End If
+        Else
+            Response.Redirect("~\logout.aspx")
+        End If
+        'Session("empcode") = "014543"
+        labelmsg.Text = ""
+    End Sub
+
+    Protected Sub Saveaptbangla_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Saveaptbangla.Click
+        Dim dd1 As String
+        Dim dd As String
+
+        dd1 = letdt.Text.Trim
+        Dim strdate3() As String = dd1.Split("/"c)
+        dd1 = strdate3(1) & "/" & strdate3(0) & "/" & strdate3(2)
+
+        dd = CDate(dd1)
+        Session("letdet") = dd
+
+        Dim td1 As String
+        td1 = eff_to.Text.Trim
+        Dim strdate2() As String = td1.Split("/"c)
+        td1 = strdate2(1) & "/" & strdate2(0) & "/" & strdate2(2)
+
+        Dim td As Date
+        td = CDate(td1)
+        Session("effto") = td
+
+        Dim fd1 As String
+        fd1 = eff_frm.Text.Trim
+        Dim strdate() As String = fd1.Split("/"c)
+        fd1 = strdate(1) & "/" & strdate(0) & "/" & strdate(2)
+
+        Dim fd As Date
+        fd = CDate(fd1)
+        Session("efffrom") = fd
+
+
+        chkval1()
+        If recstatus = True Then
+            If dsdata.Tables(0).Rows.Count > 0 Then
+                Try
+                    MyGlobal.Open_Con()
+                    MyGlobal.Con_Str()
+                    MyGlobal.Con_Str()
+                    Dim conn As New SqlConnection(constr)
+                    conn.Open()
+                    Cmd = New SqlCommand("update emp_modified set fromdate='" & fd & "',todate='" & td & "',letterdate='" & dd & "' where empcode='" & empno.Text & "'", conn)
+                    Cmd.ExecuteNonQuery()
+                    labelmsg.Text = "Details updated"
+                Catch ex As SqlException
+                    labelmsg.Text = ex.Message
+                    labelmsg.ForeColor = Drawing.Color.Green
+                End Try
+            Else
+                Try
+                    MyGlobal.Open_Con()
+                    MyGlobal.Con_Str()
+                    MyGlobal.Con_Str()
+                    Dim conn As New SqlConnection(constr)
+                    conn.Open()
+                    Cmd = New SqlCommand("insert into emp_modified (empcode,fromdate,todate,letterdate,appointmentletter) values('" & empno.Text & "','" & fd & "','" & td & "','" & dd & "','Y')", conn)
+                    Cmd.ExecuteNonQuery()
+                    labelmsg.Text = "Details Added"
+                Catch ex As SqlException
+                    labelmsg.Text = ex.Message
+                    labelmsg.ForeColor = Drawing.Color.Green
+                End Try
+            End If
+        End If
+        Session("AFNname") = empno.Text.Trim
+        Session("AFNwname") = empno.Text.Trim
+
+        MyGlobal.db_close()
+
+        Response.Redirect("AppLetBanglaRpt.aspx")
+
+    End Sub
+
+    Protected Sub empno_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles empno.TextChanged
+        Appdetails()
+        ppdetails()
+    End Sub
+    Private Sub MessageBox(ByVal msg As String)
+        Dim lbl As New Label()
+        lbl.Text = "<script language='javascript'> window.alert('" + msg + "')</script>"
+        Page.Controls.Add(lbl)
+    End Sub
+    Private Sub Appdetails()
+
+        Dim dr1 As DataRow
+        ecode = empno.Text
+        Getcedata(ecode)
+        If recstatus = True Then
+            If dsdata.Tables(0).Rows.Count > 0 Then
+                dr1 = dsdata.Tables(0).Rows(0)
+                empname.Text = dr1("empname").ToString
+                dept.Text = dr1("departmentcode").ToString
+                sect.Text = dr1("sectioncode").ToString
+
+            Else
+                MessageBox("EmployeeCode doesnot Exist!!")
+            End If
+        End If
+    End Sub
+    Private Sub ppdetails()
+
+        Dim drs As DataRow
+        ecode = empno.Text
+        Getppdata(ecode)
+        If recstatus = True Then
+            If dsdata.Tables(0).Rows.Count > 0 Then
+                drs = dsdata.Tables(0).Rows(0)
+                ppno.Text = drs("passportno").ToString
+
+            Else
+                MessageBox("Employee Passport Details doesnot Exist!!")
+            End If
+        End If
+    End Sub
+
+    Protected Sub wempno_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles wempno.TextChanged
+        Appdetails1()
+    End Sub
+    Private Sub Appdetails1()
+
+        MyGlobal.Open_Con()
+        MyGlobal.Con_Str()
+
+        MyGlobal.Con_Str()
+        Dim con As New SqlConnection(constr)
+        Con.Open()
+        Cmd = New SqlCommand("delete from cmg_witness_banglatemp", con)
+        Cmd.ExecuteNonQuery()
+
+        Dim dr1 As DataRow
+        ecode = wempno.Text
+        Getcedata(ecode)
+        If recstatus = True Then
+            If dsdata.Tables(0).Rows.Count > 0 Then
+                dr1 = dsdata.Tables(0).Rows(0)
+                wempname.Text = dr1("empname").ToString
+                wdesig.Text = dr1("designation").ToString
+
+            Else
+                MessageBox("EmployeeCode doesnot Exist!!")
+            End If
+
+            Try
+                MyGlobal.Open_Con()
+                MyGlobal.Con_Str()
+                MyGlobal.Con_Str()
+                Dim conn As New SqlConnection(constr)
+                conn.Open()
+                Cmd = New SqlCommand("insert into cmg_witness_banglatemp (wempno,wempdesig,wempname) values('" & wempno.Text & "','" & wdesig.Text & "','" & wempname.Text & "')", conn)
+                Cmd.ExecuteNonQuery()
+                'labelmsg.Text = "Details updated"
+            Catch ex As SqlException
+                labelmsg.Text = ex.Message
+                labelmsg.ForeColor = Drawing.Color.Green
+            End Try
+
+        End If
+    End Sub
+    Private Sub chkval1()
+        'Dim drp As DataRow
+        ecode = empno.Text
+        getchkval1(ecode)
+        'If recstatus = True Then
+        '    If dsdata.Tables(0).Rows.Count > 0 Then
+        '        drp = dsdata.Tables(0).Rows(0)
+        '    Else
+        '        MessageBox("Employee Passport Details doesnot Exist!!")
+        '    End If
+        'End If
+    End Sub
+End Class
